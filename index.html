@@ -4,7 +4,490 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>React Practice</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- reactページからcdnを読み込み -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <!-- babelを使うためのcdn -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
-  <body></body>
+  <body>
+    <!-- UIを表示する領域を作る -->
+    <div id="root"></div>
+    <!-- babelを使うにはtype属性にtext/babelと書く -->
+    <script type="text/babel">
+      (() => {
+        // const name = "kengo";
+        // ReactDOM.render(
+        // 第一引数に描画したいUIをかく、第二引数にそのUIをどこに描写するかを指定する
+        // 親タグは１つだけじゃないとエラーが出る。また、閉じタグがないタグは/が入っていないとエラー(jsxの仕様)
+        //   <div>
+        //     <p>Hello {name.toUpperCase()}</p>
+        //     <hr />
+        //     <p>World</p>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+        // 05.属性やイベントを扱う
+        // function showMessage() {
+        //   alert("Hello");
+        // }
+        // ReactDOM.render(
+        //   // classはjsでは予約後なのでclassNameでcssのクラスを指定する
+        //   // <div className="box"></div>,
+        //   <div
+        //     // styleに指定する場合、widthのpxは省略できる、キャメルケースで書く、jsの式は""の中に書くと文字列扱いになるので{}の中に書く
+        //     style={{ width: 100, height: 100, backgroundColor: "tomato" }}
+        //     onClick={showMessage}
+        //   ></div>,
+        //   document.getElementById("root")
+        // );
+        // 06-08.componentを作ってみる
+        // コンポーネントの関数を作る、要素の中身をreturnで返す
+        // 自分でつけた属性を受け取る際は引数を指定する
+        // propsは読み取り専用の値で、中身を書き換えるとエラーが出る
+        // function Counter(props) {
+        //   // props.color = "red"; // エラーが出る
+        //   // return <div>0 {props.color}</div>;
+        //   return <li style={{ backgroundColor: props.color }}>0</li>;
+        // }
+        // ReactDOM.render(
+        //   // コンポーネントという独自のタグを使う、名前の一文字目は必ず大文字
+        //   // コンポーネントに違いを出したいときは属性をつける、属性名は自分でつけられる
+        //   <div className="container">
+        //     <ul>
+        //       <Counter color="tomato" />
+        //       <Counter color="skyblue" />
+        //       <Counter color="limegreen" />
+        //     </ul>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+
+        // 09.イベントの仕組みを理解する
+        // function Counter(props) {
+        //   // function countUp() {
+        //   //   alert("count up!");
+        //   // }
+        //   // 値を受け取りたいときは引数に適当な変数を入れる
+        //   // function countUp(color) {
+        //   //   alert(color);
+        //   // }
+        //   // 画面遷移を防ぐにはイベントオブジェクトを受け取ってpreventDefault
+        //   function countUp(e, color) {
+        //     e.preventDefault;
+        //     alert(color);
+        //   }
+        //   // return (
+        //   //   <li style={{ backgroundColor: props.color }} onClick={countUp}>
+        //   //     0
+        //   //   </li>
+        //   // );
+        //   return (
+        //     <li style={{ backgroundColor: props.color }}>
+        //       <a
+        //         href="#"
+        //         // 関数に値を渡したいときは引数に値を入れる
+        //         // aタグにonClickをつけたい場合は画面遷移を防ぐためにイベントオブジェクトを渡す
+        //         onClick={e => countUp(e, props.color)}
+        //       >
+        //         0
+        //       </a>
+        //     </li>
+        //   );
+        // }
+        // ReactDOM.render(
+        //   <div className="container">
+        //     <ul>
+        //       <Counter color="tomato" />
+        //       <Counter color="skyblue" />
+        //       <Counter color="limegreen" />
+        //     </ul>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+
+        // 10.classに書き換える
+        // componentでstateという仕組みを使うにはclassで書き換える必要がある
+        // function Counter(props) {
+        //   return <li style={{ backgroundColor: props.color }}>0</li>;
+        // }
+        // class Counter extends React.Component {
+        //   // jsxでは直接returnするのではなくrender()メソッドで渡す必要がある
+        //   render() {
+        //     // classではpropsにthisをつける必要がある
+        //     return <li style={{ backgroundColor: this.props.color }}>0</li>;
+        //   }
+        // }
+        // ReactDOM.render(
+        //   <div className="container">
+        //     <ul>
+        //       <Counter color="tomato" />
+        //       <Counter color="skyblue" />
+        //       <Counter color="limegreen" />
+        //     </ul>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+
+        // 11.stateを使ってみる
+        // stateはUIの書き換えに必要となるcomponentの状態を保持するためのデータ
+        // ここではcounterのstateでクリックされた回数を保持してみる
+        // そのためにはconstructorで管理すれば良い
+        // class Counter extends React.Component {
+        //   // propsを受け取る
+        //   constructor(props) {
+        //     // 親クラスのconstructorも呼ぶのでsuper()としてpropsを渡す
+        //     super(props);
+        //     // stateの設定をする、Counterごとに押された数を管理する
+        //     this.state = {
+        //       count: 10,
+        //       message: "Hello!"
+        //     };
+        //   }
+        //   render() {
+        //     return (
+        //       // countを表示する
+        //       <li style={{ backgroundColor: this.props.color }}>
+        //         {this.state.count}
+        //       </li>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(
+        //   <div className="container">
+        //     <ul>
+        //       <Counter color="tomato" />
+        //       <Counter color="skyblue" />
+        //       <Counter color="limegreen" />
+        //     </ul>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+
+        // 13.setStateで値を更新する
+        // class Counter extends React.Component {
+        //   constructor(props) {
+        //     super(props);
+        //     this.state = {
+        //       count: 0,
+        //       message: "Hello!"
+        //     };
+        //     // this.countUpにclass自体をbindする
+        //     this.countUp = this.countUp.bind(this);
+        //   }
+        //   countUp() {
+        //     // this.stateに値がセットできるのはconstructorの中だけなので、それ以外ではsetStateで値にアクセスできる
+        //     // this.state.count = this.state.count + 1;
+        //     // this.setState({
+        //     //   count: this.state.count + 1
+        //     // });
+        //     // また、setStateが実行されるタイミングはReactが勝手に決めるので、上のように書くとcountが他の処理で書き換わってしまいうまくcountUpできない場合がある。
+        //     // そこでsetStateではstateの変更前の値をprevStateで取得できるようになっている
+        //     // ちなみにReactではsetStateするたびにrender()が呼ばれて、それにより新しい値でUIが再描画される（重要）。
+        //     this.setState(prevState => {
+        //       return {
+        //         count: prevState.count + 1
+        //       };
+        //     });
+        //   }
+        //   render() {
+        //     return (
+        //       <li
+        //         style={{ backgroundColor: this.props.color }}
+        //         // クラスの中のメソッドにアクセスするのでthis.countUp
+        //         // countUpを括弧なしで呼ぶとメソッドの中ではthisがundefinedになるのでconstructorにbindする
+        //         onClick={this.countUp}
+        //       >
+        //         {this.state.count}
+        //       </li>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(
+        //   <div className="container">
+        //     <ul>
+        //       <Counter color="tomato" />
+        //       <Counter color="skyblue" />
+        //       <Counter color="limegreen" />
+        //     </ul>
+        //   </div>,
+        //   document.getElementById("root")
+        // );
+
+        // 14.共通要素でStateを管理する
+        // class Counter extends React.Component {
+        //   constructor(props) {
+        //     super(props);
+        //     this.state = {
+        //       count: 0,
+        //       message: "Hello!"
+        //     };
+        //     this.countUp = this.countUp.bind(this);
+        //   }
+        //   countUp() {
+        //     this.setState(prevState => {
+        //       return {
+        //         count: prevState.count + 1
+        //       };
+        //     });
+        //   }
+        //   render() {
+        //     return (
+        //       <li
+        //         style={{ backgroundColor: this.props.color }}
+        //         onClick={this.countUp}
+        //       >
+        //         {this.state.count}
+        //       </li>
+        //     );
+        //   }
+        // }
+
+        // // stateを保持したいのでclassを作る
+        // class App extends React.Component {
+        //   constructor() {
+        //     super();
+        //   }
+        //   render() {
+        //     return (
+        //       // countの値をまとめる場合、現在は個々のcounter componentが値を持っているだけなので、それをまとめるには上の階層のstateで一元管理する必要がある
+        //       <div className="container">
+        //         <ul>
+        //           <Counter color="tomato" />
+        //           <Counter color="skyblue" />
+        //           <Counter color="limegreen" />
+        //         </ul>
+        //         <div>TOTAL: 3</div>
+        //       </div>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(<App />, document.getElementById("root"));
+
+        // 15.App componentを作る
+        // stateを保持する必要がないのでCounterは関数で作る
+        // Reactでは今回のようにstateを持つComponentは最小限にしてあげて、その他のcomponentに極力値を持たせないという設計が良いとされているので覚えておく
+        // function Counter(props) {
+        //   return (
+        //     <li style={{ backgroundColor: props.counter.color }}>
+        //       {props.counter.id}:{props.counter.count}
+        //     </li>
+        //   );
+        // }
+
+        // class App extends React.Component {
+        //   // counterの情報はApp componentで一限管理することにする
+        //   constructor() {
+        //     super();
+        //     this.state = {
+        //       counters: [
+        //         { id: "A", count: 0, color: "tomato" },
+        //         { id: "B", count: 0, color: "skyblue" },
+        //         { id: "C", count: 0, color: "limegreen" }
+        //       ]
+        //     };
+        //   }
+        //   render() {
+        //     return (
+        //       // countersの値をcounter componentに渡すため、counterという属性でそれぞれのデータを渡す
+        //       <div className="container">
+        //         <ul>
+        //           <Counter counter={this.state.counters[0]} />
+        //           <Counter counter={this.state.counters[1]} />
+        //           <Counter counter={this.state.counters[2]} />
+        //         </ul>
+        //         <div>TOTAL: 3</div>
+        //       </div>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(<App />, document.getElementById("root"));
+
+        // // 16.ループ処理でリストを描画してみる
+        // function Counter(props) {
+        //   return (
+        //     <li style={{ backgroundColor: props.counter.color }}>
+        //       {props.counter.id}:{props.counter.count}
+        //     </li>
+        //   );
+        // }
+
+        // // stateを持たせないのでfunctionでCounterListのcomponentを作る
+        // function CounterList(props) {
+        //   // 渡ってきたpropsのcountersをmapで処理していく
+        //   const counters = props.counters.map(counter => {
+        //     // 個々の要素をcounterで受け取りつつ、それを使ってCounter componentを返せば良い
+        //     // Counter componentはcounter属性でデータを渡せば良い
+        //     return (
+        //       <Counter
+        //         counter={counter}
+        //         // ループで処理するような要素にはkeyというユニークな値をつけることが必須
+        //         key={counter.id}
+        //       />
+        //     );
+        //   });
+        //   // 描画するのはリストなのでul要素を作る、liはcountersとして上で作る
+        //   return <ul>{counters}</ul>;
+        // }
+
+        // class App extends React.Component {
+        //   constructor() {
+        //     super();
+        //     this.state = {
+        //       counters: [
+        //         { id: "A", count: 0, color: "tomato" },
+        //         { id: "B", count: 0, color: "skyblue" },
+        //         { id: "C", count: 0, color: "limegreen" }
+        //       ]
+        //     };
+        //   }
+        //   render() {
+        //     return (
+        //       <div className="container">
+        //         <CounterList counters={this.state.counters} />
+        //         <div>TOTAL: 3</div>
+        //       </div>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(<App />, document.getElementById("root"));
+
+        // // 17.イベント処理を親要素に渡す
+        // function Counter(props) {
+        //   return (
+        //     // stateを変更できるのはApp componentだけなのでクリックした時にCounterの値を親要素に渡したい。
+        //     // countUpという属性を親要素につけることにしてpropsのcounterを渡す
+        //     <li
+        //       style={{ backgroundColor: props.counter.color }}
+        //       onClick={() => props.countUp(props.counter)}
+        //     >
+        //       {props.counter.id}:{props.counter.count}
+        //     </li>
+        //   );
+        // }
+
+        // function CounterList(props) {
+        //   const counters = props.counters.map(counter => {
+        //     // ここでもstateの値を変更できないのでさらに親要素のpropsにcountUpという属性をつける
+        //     return <Counter counter={counter} key={counter.id} countUp={props.countUp} />;
+        //   });
+        //   return <ul>{counters}</ul>;
+        // }
+
+        // class App extends React.Component {
+        //   constructor() {
+        //     super();
+        //     this.state = {
+        //       counters: [
+        //         { id: "A", count: 0, color: "tomato" },
+        //         { id: "B", count: 0, color: "skyblue" },
+        //         { id: "C", count: 0, color: "limegreen" }
+        //       ]
+        //     };
+        //     // thisをbindする必要があるのでconstructorのなかでbindする。これでthisがundefinedにならない
+        //     this.countUp = this.countUp.bind(this);
+        //   }
+        //   countUp(counter) {}
+        //   render() {
+        //     return (
+        //       <div className="container">
+        //         <CounterList
+        //           counters={this.state.counters}
+        //           countUp={this.countUp}
+        //         />
+        //         <div>TOTAL: 3</div>
+        //       </div>
+        //     );
+        //   }
+        // }
+        // ReactDOM.render(<App />, document.getElementById("root"));
+
+        // 18.カウントアップ機能を実装する、19.カウンターを完成させる
+        function Counter(props) {
+          return (
+            <li
+              style={{ backgroundColor: props.counter.color }}
+              onClick={() => props.countUp(props.counter)}
+            >
+              {props.counter.id}:{props.counter.count}
+            </li>
+          );
+        }
+
+        function CounterList(props) {
+          const counters = props.counters.map(counter => {
+            return (
+              <Counter
+                counter={counter}
+                key={counter.id}
+                countUp={props.countUp}
+              />
+            );
+          });
+          return <ul>{counters}</ul>;
+        }
+
+        class App extends React.Component {
+          constructor() {
+            super();
+            this.state = {
+              counters: [
+                { id: "A", count: 0, color: "tomato" },
+                { id: "B", count: 0, color: "skyblue" },
+                { id: "C", count: 0, color: "limegreen" }
+              ],
+              total: 0
+            };
+            this.countUp = this.countUp.bind(this);
+          }
+          // オブジェクト形式なのでmapを使ってプロパティの中身までちゃんとコピーをする。
+          // 全てのプロパティの値をreturn {id: counter.id,count: counter.count,color: counter.color}のように返せば、直前のstateの値のcountersのコピーができる
+          // あとはcounterのidをもとにcountを増やしたい要素の順番を調べる
+          countUp(counter) {
+            this.setState(prevState => {
+              const counters = prevState.counters.map(counter => {
+                return {
+                  id: counter.id,
+                  count: counter.count,
+                  color: counter.color
+                };
+              });
+              // 一旦、counter.idを返して、それが何番目かをindexOfで調べる
+              const pos = counters
+                .map(counter => {
+                  return counter.id;
+                })
+                .indexOf(counter.id);
+              counters[pos].count++;
+              return {
+                counters: counters,
+                // Counterがクリックされるたびにtotalが増えるようにする
+                total: prevState.total + 1
+              };
+            });
+          }
+          render() {
+            return (
+              <div className="container">
+                <CounterList
+                  counters={this.state.counters}
+                  countUp={this.countUp}
+                />
+                <div>TOTAL: {this.state.total}</div>
+              </div>
+            );
+          }
+        }
+        ReactDOM.render(<App />, document.getElementById("root"));
+      })();
+    </script>
+  </body>
 </html>
